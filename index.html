@@ -1237,13 +1237,31 @@
                         <li><a href="#demo">Demo</a></li>
                         <li><a href="#testimonials">Testimoni</a></li>
                         <li><a href="#contact">Kontak</a></li>
+                    </ul>
+                    
+                    <div class="user-actions">
                         <button class="btn btn-login" id="open-login">Masuk</button>
                         <button class="btn btn-register" id="open-register">Daftar</button>
-                            <button class="btn btn-ai btn-disabled" id="open-ai" title="Login untuk mengakses AI Assistant">
-                                <i class="fas fa-robot"></i> AI Assistant
-                            </button>
-                               
-                    </ul>
+                        <button class="btn btn-ai btn-disabled" id="open-ai" title="Login untuk mengakses AI Assistant">
+                            <i class="fas fa-robot"></i> AI Assistant
+                        </button>
+                        
+                        <!-- Area untuk pengguna yang sudah login -->
+                        <div class="logged-in-actions" style="display: none;">
+                            <div class="dropdown">
+                                <div class="user-profile">
+                                    <div class="user-avatar" id="user-avatar">U</div>
+                                    <div class="user-info">
+                                        <div class="user-name" id="user-name">Nama Pengguna</div>
+                                        <div class="user-role" id="user-role">Guru</div>
+                                    </div>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="dropdown-content">
+                                    <a href="#"><i class="fas fa-user"></i> Profil Saya</a>
+                                    <a href="#"><i class="fas fa-cog"></i> Pengaturan</a>
+                                    <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Keluar</a>
+                                </div>
                             </div>
                         </div>
                     </div>
