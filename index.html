@@ -1303,24 +1303,36 @@
             </div>
         </div>
     </footer>
-
-    <script>
-        // Firebase Configuration - GANTI DENGAN KONFIGURASI FIREBASE ANDA
-        const firebaseConfig = {
-          apiKey: "AIzaSyA-1XhphzT72YY6pbWa3Pe3hSxrvqJdrbk",
-          authDomain: "temanguru-528da.firebaseapp.com",
-          projectId: "temanguru-528da",
-          storageBucket: "temanguru-528da.firebasestorage.app",
-          messagingSenderId: "168377875316",
-          appId: "1:168377875316:web:42fcc13cd9c6ae6aa70a21",
-          measurementId: "G-MHJNQC4BQP"
+<script>
+    // Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyA-1XhphzT72YY6pbWa3Pe3hSxrvqJdrbk",
+        authDomain: "temanguru-528da.firebaseapp.com",
+        projectId: "temanguru-528da",
+        storageBucket: "temanguru-528da.firebasestorage.app",
+        messagingSenderId: "168377875316",
+        appId: "1:168377875316:web:42fcc13cd9c6ae6aa70a21",
+        measurementId: "G-MHJNQC4BQP"
     };
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
+    // PERBAIKAN UTAMA: Inisialisasi semua fungsi setelah DOM siap
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeApp();
+    });
+
+    function initializeApp() {
+        initializeNavbar();
+        initializeAuth();
+        initializeButtons();
+        initializeScrollEffects();
+    }
+
+    function initializeNavbar() {
         // Navbar scroll effect
         window.addEventListener('scroll', function() {
             const header = document.getElementById('header');
@@ -1331,159 +1343,140 @@
             }
         });
 
-        // Mobile menu functionality - PERBAIKAN UTAMA
+        // Mobile menu functionality
         const mobileMenuBtn = document.getElementById('mobile-menu-toggle');
         const navContainer = document.getElementById('nav-container');
         const userDropdown = document.getElementById('user-dropdown');
         
-        mobileMenuBtn.addEventListener('click', function(e) {
-            e.stopPropagation(); // Mencegah event bubbling
-            navContainer.classList.toggle('active');
-            mobileMenuBtn.innerHTML = navContainer.classList.contains('active') 
-                ? '<i class="fas fa-times"></i>' 
-                : '<i class="fas fa-bars"></i>';
-            
-            // Toggle body scroll ketika menu mobile terbuka
-            document.body.style.overflow = navContainer.classList.contains('active') ? 'hidden' : '';
-        });
+        if (mobileMenuBtn && navContainer) {
+            mobileMenuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                navContainer.classList.toggle('active');
+                mobileMenuBtn.innerHTML = navContainer.classList.contains('active') 
+                    ? '<i class="fas fa-times"></i>' 
+                    : '<i class="fas fa-bars"></i>';
+                
+                document.body.style.overflow = navContainer.classList.contains('active') ? 'hidden' : '';
+            });
+        }
 
-        // Close mobile menu when clicking on a link - PERBAIKAN UTAMA
+        // Close mobile menu when clicking on links
         document.querySelectorAll('.main-nav a, .user-actions .btn').forEach(link => {
             link.addEventListener('click', function(e) {
-                if (window.innerWidth <= 768) {
+                if (window.innerWidth <= 768 && navContainer) {
                     navContainer.classList.remove('active');
-                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    if (mobileMenuBtn) {
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    }
                     document.body.style.overflow = '';
                 }
             });
         });
 
-        // Mobile dropdown functionality - PERBAIKAN UTAMA
+        // Mobile dropdown functionality
         if (userDropdown) {
             const userProfile = userDropdown.querySelector('.user-profile');
-            
-            userProfile.addEventListener('click', function(e) {
-                if (window.innerWidth <= 768) {
-                    e.preventDefault();
-                    e.stopPropagation(); // Mencegah event bubbling
-                    userDropdown.classList.toggle('active');
-                }
-            });
+            if (userProfile) {
+                userProfile.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 768) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        userDropdown.classList.toggle('active');
+                    }
+                });
+            }
         }
 
-        // Close mobile menu when clicking outside - PERBAIKAN UTAMA
+        // Close mobile menu when clicking outside
         document.addEventListener('click', function(event) {
-            if (!event.target.closest('.nav-container') && !event.target.closest('.mobile-menu-btn')) {
+            if (navContainer && !event.target.closest('.nav-container') && !event.target.closest('.mobile-menu-btn')) {
                 navContainer.classList.remove('active');
-                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                if (mobileMenuBtn) {
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                }
                 document.body.style.overflow = '';
             }
             
-            // Tutup dropdown mobile jika klik di luar
             if (window.innerWidth <= 768 && userDropdown && !event.target.closest('.dropdown')) {
                 userDropdown.classList.remove('active');
             }
         });
 
-        // Elements
-        const guestActions = document.querySelector('.guest-actions');
-        const loggedInActions = document.querySelector('.logged-in-actions');
-        const logoutBtn = document.getElementById('logout-btn');
+        // Close mobile menu on window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768 && navContainer) {
+                navContainer.classList.remove('active');
+                if (mobileMenuBtn) {
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+                document.body.style.overflow = '';
+            }
+        });
+    }
 
-        // Tombol AI - navigasi ke halaman AI
+    function initializeButtons() {
+        // PERBAIKAN UTAMA: Event listener untuk semua tombol utama
+        const tryFreeButtons = document.querySelectorAll('.btn-primary');
+        tryFreeButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Tombol Coba Gratis diklik');
+                window.location.href = 'register.html';
+            });
+        });
+
+        const ctaButtons = document.querySelectorAll('.btn-cta');
+        ctaButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Tombol CTA diklik');
+                window.location.href = 'register.html';
+            });
+        });
+
+        const loginButtons = document.querySelectorAll('.btn-login');
+        loginButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Tombol Login diklik');
+                window.location.href = 'login.html';
+            });
+        });
+
+        // Tombol AI functionality
         const openAiLoggedinBtn = document.getElementById('open-ai-loggedin');
         const heroAiBtn = document.getElementById('hero-ai-btn');
         const ctaAiBtn = document.getElementById('cta-ai-btn');
 
-        // Fungsi untuk navigasi ke halaman AI
         function navigateToAI() {
-            // Ganti URL dengan halaman AI Anda
+            console.log('Tombol AI diklik');
             window.location.href = 'ai-assistant.html';
         }
 
-        // Event listener untuk semua tombol AI
         if (openAiLoggedinBtn) openAiLoggedinBtn.addEventListener('click', navigateToAI);
         if (heroAiBtn) heroAiBtn.addEventListener('click', navigateToAI);
         if (ctaAiBtn) ctaAiBtn.addEventListener('click', navigateToAI);
 
-        // Update user UI after login
-        function updateUserUI(userData) {
-            const userName = document.getElementById('user-name');
-            const userRole = document.getElementById('user-role');
-            const userAvatar = document.getElementById('user-avatar');
-            
-            userName.textContent = userData.name;
-            userRole.textContent = 'Guru';
-            
-            // Set avatar initials
-            const initials = userData.name.split(' ').map(n => n[0]).join('').toUpperCase();
-            userAvatar.textContent = initials;
-        }
-
-        // Logout functionality
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                auth.signOut().then(() => {
-                    guestActions.style.display = 'flex';
-                    loggedInActions.style.display = 'none';
-                }).catch((error) => {
-                    console.error("Logout error:", error);
-                });
-            });
-        }
-
-        // Check if user is already logged in
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                // User is signed in
-                db.collection('users').doc(user.uid).get()
-                    .then((doc) => {
-                        if (doc.exists) {
-                            const userData = doc.data();
-                            updateUserUI(userData);
-                            guestActions.style.display = 'none';
-                            loggedInActions.style.display = 'flex';
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Error getting user data:", error);
-                    });
-            } else {
-                // User is signed out
-                guestActions.style.display = 'flex';
-                loggedInActions.style.display = 'none';
-            }
-        });
-
-        // Initially show guest actions
-        guestActions.style.display = 'flex';
-        loggedInActions.style.display = 'none';
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('.main-nav a, .btn-primary, .btn-cta').forEach(anchor => {
+        // Smooth scrolling untuk navigation links
+        document.querySelectorAll('.main-nav a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
-                // Skip untuk link yang mengarah ke halaman lain
-                if (this.getAttribute('href') && 
-                    (this.getAttribute('href').startsWith('http') || 
-                     this.getAttribute('href').endsWith('.html'))) {
-                    return;
-                }
-                
                 e.preventDefault();
-                
                 const targetId = this.getAttribute('href');
-                if(targetId && targetId.startsWith('#')) {
+                if (targetId && targetId.startsWith('#')) {
                     const targetElement = document.querySelector(targetId);
-                    if(targetElement) {
+                    if (targetElement) {
                         window.scrollTo({
                             top: targetElement.offsetTop - 80,
                             behavior: 'smooth'
                         });
                         
-                        // Close mobile menu after clicking a link
-                        if (window.innerWidth <= 768) {
+                        // Close mobile menu setelah klik link
+                        const navContainer = document.getElementById('nav-container');
+                        const mobileMenuBtn = document.getElementById('mobile-menu-toggle');
+                        if (window.innerWidth <= 768 && navContainer && mobileMenuBtn) {
                             navContainer.classList.remove('active');
                             mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
                             document.body.style.overflow = '';
@@ -1492,7 +1485,76 @@
                 }
             });
         });
+    }
 
+    function initializeAuth() {
+        const guestActions = document.querySelector('.guest-actions');
+        const loggedInActions = document.querySelector('.logged-in-actions');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // Update user UI setelah login
+        function updateUserUI(userData) {
+            const userName = document.getElementById('user-name');
+            const userRole = document.getElementById('user-role');
+            const userAvatar = document.getElementById('user-avatar');
+            
+            if (userName) userName.textContent = userData.name || 'User';
+            if (userRole) userRole.textContent = 'Guru';
+            
+            if (userAvatar) {
+                const initials = (userData.name || 'User').split(' ').map(n => n[0]).join('').toUpperCase();
+                userAvatar.textContent = initials;
+            }
+        }
+
+        // Logout functionality
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                auth.signOut().then(() => {
+                    if (guestActions) guestActions.style.display = 'flex';
+                    if (loggedInActions) loggedInActions.style.display = 'none';
+                }).catch((error) => {
+                    console.error("Logout error:", error);
+                });
+            });
+        }
+
+        // Check jika user sudah login
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User sudah login
+                db.collection('users').doc(user.uid).get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            const userData = doc.data();
+                            updateUserUI(userData);
+                            if (guestActions) guestActions.style.display = 'none';
+                            if (loggedInActions) loggedInActions.style.display = 'flex';
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error getting user data:", error);
+                        // Fallback jika data tidak ditemukan
+                        updateUserUI({ name: user.email || 'User' });
+                        if (guestActions) guestActions.style.display = 'none';
+                        if (loggedInActions) loggedInActions.style.display = 'flex';
+                    });
+            } else {
+                // User logout
+                if (guestActions) guestActions.style.display = 'flex';
+                if (loggedInActions) loggedInActions.style.display = 'none';
+            }
+        });
+
+        // Initially show guest actions
+        if (guestActions) guestActions.style.display = 'flex';
+        if (loggedInActions) loggedInActions.style.display = 'none';
+    }
+
+    function initializeScrollEffects() {
         // Fade in animation on scroll
         const fadeElements = document.querySelectorAll('.fade-in');
         
@@ -1502,25 +1564,52 @@
                 const elementVisible = 150;
                 
                 if (elementTop < window.innerHeight - elementVisible) {
-                    element.classList.add('fade-in');
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
                 }
             });
         };
+        
+        // Set initial state untuk animasi
+        fadeElements.forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(30px)';
+            element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        });
         
         // Initial check
         fadeInOnScroll();
         
         // Check on scroll
         window.addEventListener('scroll', fadeInOnScroll);
+    }
 
-        // Close mobile menu on window resize
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 768) {
-                navContainer.classList.remove('active');
-                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                document.body.style.overflow = '';
-            }
-        });
-    </script>
+    // PERBAIKAN TAMBAHAN: Backup event listener untuk memastikan tombol bekerja
+    document.addEventListener('click', function(e) {
+        // Handle tombol Coba Gratis Sekarang
+        if (e.target.closest('.btn-primary')) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = 'register.html';
+            return;
+        }
+
+        // Handle tombol Login
+        if (e.target.closest('.btn-login')) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = 'login.html';
+            return;
+        }
+
+        // Handle tombol CTA
+        if (e.target.closest('.btn-cta')) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = 'register.html';
+            return;
+        }
+    });
+</script>
 </body>
 </html>
