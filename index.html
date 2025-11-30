@@ -15,64 +15,287 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
     <style>
-        /* CSS yang sama seperti sebelumnya, ditambahkan beberapa style baru */
-        
-        /* Style untuk tombol yang dinonaktifkan */
-        .btn-disabled {
-            background-color: #bdc3c7 !important;
-            color: #7f8c8d !important;
-            cursor: not-allowed !important;
-            pointer-events: none !important;
-            box-shadow: none !important;
-            transform: none !important;
-            opacity: 0.7;
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #2ecc71;
+            --light: #ecf0f1;
+            --dark: #34495e;
+            --text: #2c3e50;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
-        .btn-disabled:hover {
-            transform: none !important;
-            box-shadow: none !important;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
         
-        /* Overlay untuk fitur yang terkunci */
-        .feature-locked {
-            position: relative;
+        html {
+            scroll-behavior: smooth;
         }
         
-        .feature-locked::after {
-            content: '';
-            position: absolute;
+        body {
+            background-color: #f9fafb;
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 15px;
+            z-index: 1000;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+        
+        header.scrolled {
+            background-color: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 5px 0;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            transition: var(--transition);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary);
-            font-weight: 600;
-            z-index: 2;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
         }
         
-        .feature-locked::before {
-            content: '🔒 Login untuk mengakses';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(44, 62, 80, 0.9);
+        .logo-icon i {
+            font-size: 20px;
             color: white;
-            padding: 10px 15px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 35px;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 0;
+            position: relative;
+            font-size: 15px;
+        }
+        
+        nav a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(to right, var(--secondary), var(--accent));
+            transition: var(--transition);
+            border-radius: 2px;
+        }
+        
+        nav a:hover {
+            color: var(--secondary);
+        }
+        
+        nav a:hover:after {
+            width: 100%;
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 10px 22px;
             border-radius: 8px;
-            font-size: 14px;
             font-weight: 600;
-            z-index: 3;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 14px;
+            letter-spacing: 0.3px;
             white-space: nowrap;
         }
         
-        /* Modal untuk meminta login */
-        .login-required-modal {
+        .btn-login {
+            background-color: transparent;
+            color: var(--secondary);
+            border: 2px solid var(--secondary);
+        }
+        
+        .btn-login:hover {
+            background-color: var(--secondary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-register {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: white;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        /* Tombol AI Baru */
+        .btn-ai {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-ai:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(155, 89, 182, 0.4);
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .user-profile:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--primary);
+        }
+        
+        .user-role {
+            font-size: 12px;
+            color: var(--dark);
+        }
+        
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: var(--shadow);
+            border-radius: 8px;
+            padding: 10px 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: var(--transition);
+            z-index: 100;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-content a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            color: var(--dark);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .dropdown-content a:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--secondary);
+        }
+        
+        .dropdown-content a i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Modal Styles */
+        .modal {
             display: none;
             position: fixed;
             top: 0;
@@ -85,30 +308,816 @@
             animation: fadeIn 0.3s ease;
         }
         
-        .login-required-content {
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
             position: relative;
             background-color: white;
-            margin: 15% auto;
-            padding: 30px;
+            margin: 5% auto;
+            padding: 0;
             width: 90%;
-            max-width: 450px;
+            max-width: 500px;
             border-radius: 15px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-            text-align: center;
             animation: slideIn 0.3s ease;
         }
         
-        .login-required-icon {
-            font-size: 48px;
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: var(--dark);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 10;
+        }
+        
+        .close-modal:hover {
             color: var(--secondary);
+            transform: rotate(90deg);
+        }
+        
+        .modal-header {
+            padding: 30px 30px 20px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+        
+        .modal-header h2 {
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .modal-header p {
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .form-group {
             margin-bottom: 20px;
         }
         
-        .login-required-buttons {
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .btn-modal {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn-modal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .form-footer p {
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        .form-footer a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Alert Styles */
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .alert-success {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+            border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+        
+        .alert-error {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #c0392b;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .spinner i {
+            font-size: 20px;
+            color: var(--secondary);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 150px 0 100px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+            background-size: cover;
+            opacity: 0.1;
+            border-radius: 0 0 0 100px;
+        }
+        
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 50px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-text {
+            flex: 1;
+        }
+        
+        .hero-text h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .hero-text p {
+            font-size: 18px;
+            margin-bottom: 35px;
+            color: var(--dark);
+            max-width: 90%;
+        }
+        
+        .hero-image {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+            transition: var(--transition);
+        }
+        
+        .hero-image img:hover {
+            transform: perspective(1000px) rotateY(0) rotateX(0);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #27ae60);
+            color: white;
+            padding: 14px 35px;
+            font-size: 16px;
+            box-shadow: 0 5px 20px rgba(46, 204, 113, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
+        }
+        
+        .btn-primary:hover:before {
+            left: 100%;
+        }
+        
+        /* Features */
+        .features {
+            padding: 100px 0;
+            background-color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 36px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2:after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(to right, var(--secondary), var(--accent));
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        .section-title p {
+            color: var(--dark);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 17px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 40px 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .feature-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--secondary), var(--accent));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: var(--transition);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card:hover:before {
+            transform: scaleX(1);
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(46, 204, 113, 0.1));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            transition: var(--transition);
+        }
+        
+        .feature-card:hover .feature-icon {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            transform: scale(1.1);
+        }
+        
+        .feature-icon i {
+            font-size: 32px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition);
+        }
+        
+        .feature-card:hover .feature-icon i {
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-size: 22px;
+            font-weight: 600;
+        }
+        
+        .feature-card p {
+            color: var(--dark);
+            line-height: 1.7;
+        }
+        
+        /* Demo Section */
+        .demo {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .demo:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1588072432836-e10032774350?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+            background-size: cover;
+            opacity: 0.05;
+            border-radius: 0 100px 0 0;
+        }
+        
+        .demo-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .demo-text {
+            flex: 1;
+        }
+        
+        .demo-text h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .demo-text p {
+            margin-bottom: 30px;
+            color: var(--dark);
+            font-size: 17px;
+            line-height: 1.7;
+        }
+        
+        .demo-image {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .demo-image img {
+            max-width: 100%;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transform: perspective(1000px) rotateY(5deg) rotateX(5deg);
+            transition: var(--transition);
+        }
+        
+        .demo-image img:hover {
+            transform: perspective(1000px) rotateY(0) rotateX(0);
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            padding: 100px 0;
+            background-color: white;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .testimonial-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .testimonial-content {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .testimonial-content:before {
+            content: """;
+            font-size: 60px;
+            color: rgba(52, 152, 219, 0.1);
+            position: absolute;
+            top: -20px;
+            left: -10px;
+            font-family: Georgia, serif;
+        }
+        
+        .testimonial-content p {
+            font-style: italic;
+            color: var(--dark);
+            line-height: 1.7;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .author-info h4 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .author-info p {
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        /* CTA Section */
+        .cta {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: white;
+            text-align: center;
+        }
+        
+        .cta h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .cta p {
+            font-size: 18px;
+            margin-bottom: 35px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .btn-cta {
+            background: white;
+            color: var(--secondary);
+            padding: 14px 35px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--primary), #1a252f);
+            color: white;
+            padding: 70px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 25px;
+            font-size: 20px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 3px;
+            background: var(--accent);
+            bottom: -8px;
+            left: 0;
+            border-radius: 2px;
+        }
+        
+        .footer-column p {
+            color: #bdc3c7;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-column a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-column a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .social-links {
             display: flex;
             gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
             justify-content: center;
-            margin-top: 25px;
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #bdc3c7;
+            font-size: 14px;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--primary);
+            cursor: pointer;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero-text h2 {
+                font-size: 38px;
+            }
+            
+            .hero-content, .demo-content {
+                gap: 30px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            nav {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: var(--transition);
+                z-index: 999;
+            }
+            
+            nav.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .user-actions {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+            }
+            
+            .user-actions .btn {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .header-content {
+                flex-wrap: wrap;
+            }
+            
+            .hero {
+                padding: 130px 0 80px;
+            }
+            
+            .hero-content, .demo-content {
+                flex-direction: column;
+            }
+            
+            .hero-text h2 {
+                font-size: 32px;
+            }
+            
+            .hero-text p {
+                max-width: 100%;
+            }
+            
+            .hero-image img, .demo-image img {
+                transform: none;
+            }
+            
+            .section-title h2 {
+                font-size: 30px;
+            }
+            
+            /* Perbaikan untuk modal di perangkat mobile */
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+            
+            .modal-body {
+                padding: 20px;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            .form-control {
+                padding: 10px 12px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero-text h2 {
+                font-size: 28px;
+            }
+            
+            .btn {
+                padding: 10px 18px;
+            }
+            
+            .feature-card, .testimonial-card {
+                padding: 25px 20px;
+            }
+            
+            .user-profile {
+                display: none;
+            }
+            
+            .modal-content {
+                margin: 5% auto;
+                width: 95%;
+            }
+            
+            /* Perbaikan untuk tombol di navbar mobile */
+            .user-actions .btn {
+                padding: 12px 15px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -140,7 +1149,7 @@
                     <div class="user-actions">
                         <!-- Tampilan sebelum login -->
                         <div class="guest-actions">
-                            <button class="btn btn-ai btn-disabled" id="open-ai" title="Login untuk mengakses AI Assistant">
+                            <button class="btn btn-ai" id="open-ai">
                                 <i class="fas fa-robot"></i> AI Assistant
                             </button>
                             <button class="btn btn-login" id="open-login">Masuk</button>
@@ -176,30 +1185,79 @@
         </div>
     </header>
 
-    <!-- Modal Login Required -->
-    <div class="login-required-modal" id="login-required-modal">
-        <div class="login-required-content">
-            <div class="login-required-icon">
-                <i class="fas fa-lock"></i>
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-login">&times;</span>
+            <div class="modal-header">
+                <h2>Masuk ke Akun Anda</h2>
+                <p>Selamat datang kembali! Silakan masuk ke akun Anda</p>
             </div>
-            <h2>Login Diperlukan</h2>
-            <p>Anda perlu login atau mendaftar untuk mengakses fitur ini. Bergabunglah dengan komunitas guru kami untuk mendapatkan akses penuh ke semua fitur Temanguru.</p>
-            <div class="login-required-buttons">
-                <button class="btn btn-login" id="login-from-modal">Masuk</button>
-                <button class="btn btn-register" id="register-from-modal">Daftar</button>
+            <div class="modal-body">
+                <div class="alert alert-error" id="login-error"></div>
+                <div class="spinner" id="login-spinner">
+                    <i class="fas fa-spinner"></i>
+                </div>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" class="form-control" placeholder="nama@sekolah.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Kata Sandi</label>
+                        <input type="password" id="login-password" class="form-control" placeholder="Masukkan kata sandi" required>
+                    </div>
+                    <button type="submit" class="btn-modal" id="login-submit">Masuk</button>
+                </form>
+                <div class="form-footer">
+                    <p>Belum punya akun? <a href="#" id="switch-to-register">Daftar di sini</a></p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal lainnya (login, register) sama seperti sebelumnya -->
-    <!-- Login Modal -->
-    <div class="modal" id="login-modal">
-        <!-- Konten modal login sama seperti sebelumnya -->
-    </div>
-
     <!-- Register Modal -->
     <div class="modal" id="register-modal">
-        <!-- Konten modal register sama seperti sebelumnya -->
+        <div class="modal-content">
+            <span class="close-modal" id="close-register">&times;</span>
+            <div class="modal-header">
+                <h2>Daftar Akun Baru</h2>
+                <p>Bergabunglah dengan komunitas guru profesional</p>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-error" id="register-error"></div>
+                <div class="alert alert-success" id="register-success"></div>
+                <div class="spinner" id="register-spinner">
+                    <i class="fas fa-spinner"></i>
+                </div>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-name">Nama Lengkap</label>
+                        <input type="text" id="register-name" class="form-control" placeholder="Nama lengkap Anda" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" class="form-control" placeholder="nama@sekolah.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-school">Sekolah</label>
+                        <input type="text" id="register-school" class="form-control" placeholder="Nama sekolah Anda" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Kata Sandi</label>
+                        <input type="password" id="register-password" class="form-control" placeholder="Buat kata sandi yang kuat (min. 6 karakter)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm">Konfirmasi Kata Sandi</label>
+                        <input type="password" id="register-confirm" class="form-control" placeholder="Ulangi kata sandi Anda" required>
+                    </div>
+                    <button type="submit" class="btn-modal" id="register-submit">Daftar Sekarang</button>
+                </form>
+                <div class="form-footer">
+                    <p>Sudah punya akun? <a href="#" id="switch-to-login">Masuk di sini</a></p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Hero Section -->
@@ -210,8 +1268,8 @@
                     <h2>Kelola Nilai Rapor dengan Mudah dan Efisien</h2>
                     <p>Temanguru membantu guru dalam mengelola nilai siswa dengan sistem yang intuitif, cepat, dan akurat. Hemat waktu dan fokus pada pengajaran yang berkualitas.</p>
                     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                        <button class="btn btn-primary" id="hero-try-btn">Coba Gratis Sekarang</button>
-                        <button class="btn btn-ai btn-disabled" id="hero-ai-btn" title="Login untuk mengakses AI Assistant">
+                        <button class="btn btn-primary">Coba Gratis Sekarang</button>
+                        <button class="btn btn-ai" id="hero-ai-btn">
                             <i class="fas fa-robot"></i> Coba AI Assistant
                         </button>
                     </div>
@@ -231,42 +1289,42 @@
                 <p>Platform yang dirancang khusus untuk memudahkan pekerjaan administratif guru</p>
             </div>
             <div class="features-grid">
-                <div class="feature-card fade-in feature-locked" id="feature-input">
+                <div class="feature-card fade-in">
                     <div class="feature-icon">
                         <i class="fas fa-edit"></i>
                     </div>
                     <h3>Input Nilai Mudah</h3>
                     <p>Input nilai rapor dengan antarmuka yang sederhana dan cepat. Sistem otomatis menghitung rata-rata dan konversi nilai.</p>
                 </div>
-                <div class="feature-card fade-in feature-locked" id="feature-analytics">
+                <div class="feature-card fade-in">
                     <div class="feature-icon">
                         <i class="fas fa-chart-bar"></i>
                     </div>
                     <h3>Analisis Nilai</h3>
                     <p>Dapatkan analisis mendalam tentang perkembangan siswa dengan grafik dan statistik yang informatif.</p>
                 </div>
-                <div class="feature-card fade-in feature-locked" id="feature-export">
+                <div class="feature-card fade-in">
                     <div class="feature-icon">
                         <i class="fas fa-file-export"></i>
                     </div>
                     <h3>Ekspor Laporan</h3>
                     <p>Ekspor data nilai ke berbagai format (PDF, Excel) untuk kebutuhan administrasi sekolah.</p>
                 </div>
-                <div class="feature-card fade-in feature-locked" id="feature-ai">
+                <div class="feature-card fade-in">
                     <div class="feature-icon">
                         <i class="fas fa-robot"></i>
                     </div>
                     <h3>AI Assistant</h3>
                     <p>Dapatkan bantuan AI untuk analisis data nilai, rekomendasi pembelajaran, dan pembuatan laporan otomatis.</p>
                 </div>
-                <div class="feature-card fade-in feature-locked" id="feature-management">
+                <div class="feature-card fade-in">
                     <div class="feature-icon">
                         <i class="fas fa-users"></i>
                     </div>
                     <h3>Manajemen Kelas</h3>
                     <p>Kelola data siswa, pembagian kelas, dan jadwal pelajaran dengan sistem yang terintegrasi.</p>
                 </div>
-                <div class="feature-card fade-in feature-locked" id="feature-security">
+                <div class="feature-card fade-in">
                     <div class="feature-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
@@ -288,7 +1346,7 @@
                     <h2>Input Nilai Rapor dalam Hitungan Menit</h2>
                     <p>Dengan antarmuka yang dirancang khusus untuk guru, Anda dapat menginput nilai siswa dengan cepat dan akurat. Sistem akan otomatis menghitung nilai akhir, predikat, dan mengisi rapor digital.</p>
                     <p>Fitur analisis kami memberikan insight mendalam tentang performa kelas dan rekomendasi metode pembelajaran yang tepat untuk meningkatkan hasil belajar siswa.</p>
-                    <button class="btn btn-primary btn-disabled" id="demo-btn" title="Login untuk melihat demo lengkap">Lihat Demo Lengkap</button>
+                    <button class="btn btn-primary">Lihat Demo Lengkap</button>
                 </div>
             </div>
         </div>
@@ -302,7 +1360,42 @@
                 <p>Testimoni dari guru-guru yang telah menggunakan Temanguru</p>
             </div>
             <div class="testimonials-grid">
-                <!-- Konten testimoni sama seperti sebelumnya -->
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-content">
+                        <p>"Temanguru sangat membantu saya dalam mengelola nilai siswa. Proses input nilai menjadi lebih cepat dan akurat. Sangat direkomendasikan untuk guru!"</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SD</div>
+                        <div class="author-info">
+                            <h4>Sari Dewi, S.Pd.</h4>
+                            <p>Guru SD Negeri 05 Jakarta</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-content">
+                        <p>"Sebagai wali kelas, saya sangat terbantu dengan fitur analisis nilai di Temanguru. Saya bisa dengan mudah memantau perkembangan siswa secara keseluruhan."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">AR</div>
+                        <div class="author-info">
+                            <h4>Ahmad Rizki, M.Pd.</h4>
+                            <p>Guru SMP Negeri 12 Bandung</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-content">
+                        <p>"Fitur ekspor laporan sangat membantu dalam penyusunan rapor. Sekarang tidak perlu lagi menghitung manual, semua sudah otomatis dan akurat."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">LM</div>
+                        <div class="author-info">
+                            <h4>Linda Maharani, S.Pd.</h4>
+                            <p>Guru SMA Negeri 3 Surabaya</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -313,8 +1406,8 @@
             <h2>Siap Mengubah Cara Anda Mengelola Nilai?</h2>
             <p>Bergabunglah dengan ratusan guru yang telah merasakan kemudahan mengelola nilai rapor dengan Temanguru. Mulai gratis hari ini!</p>
             <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                <button class="btn-cta" id="cta-register-btn">Daftar Sekarang - Gratis</button>
-                <button class="btn btn-ai btn-disabled" id="cta-ai-btn" style="background: rgba(255,255,255,0.2); border: 2px solid white;" title="Login untuk mengakses AI Assistant">
+                <button class="btn-cta">Daftar Sekarang - Gratis</button>
+                <button class="btn btn-ai" id="cta-ai-btn" style="background: rgba(255,255,255,0.2); border: 2px solid white;">
                     <i class="fas fa-robot"></i> Coba AI Assistant
                 </button>
             </div>
@@ -323,7 +1416,49 @@
 
     <!-- Footer -->
     <footer id="contact">
-        <!-- Konten footer sama seperti sebelumnya -->
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Temanguru</h3>
+                    <p>Platform asisten guru profesional untuk memudahkan administrasi pendidikan dan manajemen nilai siswa.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Tautan Cepat</h3>
+                    <ul>
+                        <li><a href="#home">Beranda</a></li>
+                        <li><a href="#features">Fitur</a></li>
+                        <li><a href="#demo">Demo</a></li>
+                        <li><a href="#testimonials">Testimoni</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Dukungan</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-question-circle"></i> Bantuan</a></li>
+                        <li><a href="#"><i class="fas fa-book"></i> Panduan</a></li>
+                        <li><a href="#"><i class="fas fa-info-circle"></i> FAQ</a></li>
+                        <li><a href="#"><i class="fas fa-headset"></i> Kontak</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Kontak</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-envelope"></i> info@temanguru.com</a></li>
+                        <li><a href="#"><i class="fas fa-phone"></i> +62 21 1234 5678</a></li>
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Jakarta, Indonesia</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Temanguru. Semua hak dilindungi.</p>
+            </div>
+        </div>
     </footer>
 
     <script>
@@ -342,176 +1477,6 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Variabel untuk status login
-        let isLoggedIn = false;
-
-        // Fungsi untuk mengupdate UI berdasarkan status login
-        function updateUIForLoginStatus() {
-            if (isLoggedIn) {
-                // User sudah login - aktifkan semua tombol dan fitur
-                document.querySelectorAll('.btn-disabled').forEach(btn => {
-                    btn.classList.remove('btn-disabled');
-                });
-                
-                document.querySelectorAll('.feature-locked').forEach(feature => {
-                    feature.classList.remove('feature-locked');
-                });
-                
-                // Update teks tombol
-                const heroTryBtn = document.getElementById('hero-try-btn');
-                if (heroTryBtn) heroTryBtn.textContent = 'Dashboard Saya';
-                
-                const demoBtn = document.getElementById('demo-btn');
-                if (demoBtn) {
-                    demoBtn.textContent = 'Lihat Demo Lengkap';
-                    demoBtn.classList.remove('btn-disabled');
-                }
-                
-                const ctaRegisterBtn = document.getElementById('cta-register-btn');
-                if (ctaRegisterBtn) ctaRegisterBtn.textContent = 'Dashboard Saya';
-                
-            } else {
-                // User belum login - nonaktifkan tombol dan fitur
-                document.querySelectorAll('.btn-ai').forEach(btn => {
-                    btn.classList.add('btn-disabled');
-                });
-                
-                document.querySelectorAll('.feature-card').forEach(feature => {
-                    feature.classList.add('feature-locked');
-                });
-                
-                // Update teks tombol
-                const heroTryBtn = document.getElementById('hero-try-btn');
-                if (heroTryBtn) heroTryBtn.textContent = 'Coba Gratis Sekarang';
-                
-                const demoBtn = document.getElementById('demo-btn');
-                if (demoBtn) {
-                    demoBtn.textContent = 'Lihat Demo Lengkap';
-                    demoBtn.classList.add('btn-disabled');
-                }
-                
-                const ctaRegisterBtn = document.getElementById('cta-register-btn');
-                if (ctaRegisterBtn) ctaRegisterBtn.textContent = 'Daftar Sekarang - Gratis';
-            }
-        }
-
-        // Fungsi untuk menampilkan modal login required
-        function showLoginRequiredModal() {
-            const modal = document.getElementById('login-required-modal');
-            if (modal) {
-                modal.style.display = 'block';
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        // Fungsi untuk menutup modal login required
-        function closeLoginRequiredModal() {
-            const modal = document.getElementById('login-required-modal');
-            if (modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        // Event listener untuk tombol yang memerlukan login
-        document.addEventListener('DOMContentLoaded', function() {
-            // Tombol AI Assistant di navbar
-            const openAiBtn = document.getElementById('open-ai');
-            if (openAiBtn) {
-                openAiBtn.addEventListener('click', function(e) {
-                    if (!isLoggedIn) {
-                        e.preventDefault();
-                        showLoginRequiredModal();
-                    }
-                });
-            }
-            
-            // Tombol AI Assistant di hero section
-            const heroAiBtn = document.getElementById('hero-ai-btn');
-            if (heroAiBtn) {
-                heroAiBtn.addEventListener('click', function(e) {
-                    if (!isLoggedIn) {
-                        e.preventDefault();
-                        showLoginRequiredModal();
-                    }
-                });
-            }
-            
-            // Tombol AI Assistant di CTA section
-            const ctaAiBtn = document.getElementById('cta-ai-btn');
-            if (ctaAiBtn) {
-                ctaAiBtn.addEventListener('click', function(e) {
-                    if (!isLoggedIn) {
-                        e.preventDefault();
-                        showLoginRequiredModal();
-                    }
-                });
-            }
-            
-            // Tombol demo
-            const demoBtn = document.getElementById('demo-btn');
-            if (demoBtn) {
-                demoBtn.addEventListener('click', function(e) {
-                    if (!isLoggedIn) {
-                        e.preventDefault();
-                        showLoginRequiredModal();
-                    }
-                });
-            }
-            
-            // Fitur cards
-            document.querySelectorAll('.feature-card').forEach(card => {
-                card.addEventListener('click', function(e) {
-                    if (!isLoggedIn) {
-                        e.preventDefault();
-                        showLoginRequiredModal();
-                    }
-                });
-            });
-            
-            // Tombol dari modal login required
-            const loginFromModal = document.getElementById('login-from-modal');
-            if (loginFromModal) {
-                loginFromModal.addEventListener('click', function() {
-                    closeLoginRequiredModal();
-                    document.getElementById('login-modal').style.display = 'block';
-                });
-            }
-            
-            const registerFromModal = document.getElementById('register-from-modal');
-            if (registerFromModal) {
-                registerFromModal.addEventListener('click', function() {
-                    closeLoginRequiredModal();
-                    document.getElementById('register-modal').style.display = 'block';
-                });
-            }
-            
-            // Tombol CTA register
-            const ctaRegisterBtn = document.getElementById('cta-register-btn');
-            if (ctaRegisterBtn) {
-                ctaRegisterBtn.addEventListener('click', function(e) {
-                    if (!isLoggedIn) {
-                        e.preventDefault();
-                        document.getElementById('register-modal').style.display = 'block';
-                        document.body.style.overflow = 'hidden';
-                    }
-                });
-            }
-            
-            // Tombol hero try
-            const heroTryBtn = document.getElementById('hero-try-btn');
-            if (heroTryBtn) {
-                heroTryBtn.addEventListener('click', function(e) {
-                    if (!isLoggedIn) {
-                        e.preventDefault();
-                        document.getElementById('register-modal').style.display = 'block';
-                        document.body.style.overflow = 'hidden';
-                    }
-                });
-            }
-        });
-
-        // Kode Firebase authentication yang sama seperti sebelumnya
         // Navbar scroll effect
         window.addEventListener('scroll', function() {
             const header = document.getElementById('header');
@@ -556,7 +1521,10 @@
         const registerSpinner = document.getElementById('register-spinner');
 
         // Tombol AI - navigasi ke halaman AI
+        const openAiBtn = document.getElementById('open-ai');
         const openAiLoggedinBtn = document.getElementById('open-ai-loggedin');
+        const heroAiBtn = document.getElementById('hero-ai-btn');
+        const ctaAiBtn = document.getElementById('cta-ai-btn');
 
         // Fungsi untuk navigasi ke halaman AI
         function navigateToAI() {
@@ -564,8 +1532,11 @@
             window.location.href = 'ai-assistant.html';
         }
 
-        // Event listener untuk tombol AI yang sudah login
+        // Event listener untuk semua tombol AI
+        if (openAiBtn) openAiBtn.addEventListener('click', navigateToAI);
         if (openAiLoggedinBtn) openAiLoggedinBtn.addEventListener('click', navigateToAI);
+        if (heroAiBtn) heroAiBtn.addEventListener('click', navigateToAI);
+        if (ctaAiBtn) ctaAiBtn.addEventListener('click', navigateToAI);
 
         // Open login modal
         openLoginBtn.addEventListener('click', function() {
@@ -621,16 +1592,13 @@
                 document.body.style.overflow = 'auto';
                 clearAlerts();
             }
-            if (event.target === document.getElementById('login-required-modal')) {
-                closeLoginRequiredModal();
-            }
         });
 
         // Clear alert messages
         function clearAlerts() {
-            if (loginError) loginError.style.display = 'none';
-            if (registerError) registerError.style.display = 'none';
-            if (registerSuccess) registerSuccess.style.display = 'none';
+            loginError.style.display = 'none';
+            registerError.style.display = 'none';
+            registerSuccess.style.display = 'none';
         }
 
         // Show error message
@@ -669,10 +1637,6 @@
                                 const userData = doc.data();
                                 updateUserUI(userData);
                             }
-                            
-                            // Update login status
-                            isLoggedIn = true;
-                            updateUIForLoginStatus();
                             
                             // Hide modal and show success
                             loginModal.style.display = 'none';
@@ -748,10 +1712,6 @@
                     });
                 })
                 .then(() => {
-                    // Update login status
-                    isLoggedIn = true;
-                    updateUIForLoginStatus();
-                    
                     // Hide modal and show success
                     registerModal.style.display = 'none';
                     document.body.style.overflow = 'auto';
@@ -805,10 +1765,6 @@
             e.preventDefault();
             
             auth.signOut().then(() => {
-                // Update login status
-                isLoggedIn = false;
-                updateUIForLoginStatus();
-                
                 guestActions.style.display = 'flex';
                 loggedInActions.style.display = 'none';
                 showSuccess(registerSuccess, 'Anda telah berhasil keluar.');
@@ -821,9 +1777,6 @@
         auth.onAuthStateChanged((user) => {
             if (user) {
                 // User is signed in
-                isLoggedIn = true;
-                updateUIForLoginStatus();
-                
                 db.collection('users').doc(user.uid).get()
                     .then((doc) => {
                         if (doc.exists) {
@@ -838,8 +1791,6 @@
                     });
             } else {
                 // User is signed out
-                isLoggedIn = false;
-                updateUIForLoginStatus();
                 guestActions.style.display = 'flex';
                 loggedInActions.style.display = 'none';
             }
@@ -868,10 +1819,8 @@
                     }
                 } else if (this.classList.contains('btn-primary') || this.classList.contains('btn-cta')) {
                     // For demo purposes, show register modal for CTA buttons
-                    if (!isLoggedIn) {
-                        registerModal.style.display = 'block';
-                        document.body.style.overflow = 'hidden';
-                    }
+                    registerModal.style.display = 'block';
+                    document.body.style.overflow = 'hidden';
                 }
             });
         });
