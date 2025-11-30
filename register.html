@@ -1,1 +1,386 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar - Temanguru</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #2ecc71;
+            --light: #ecf0f1;
+            --dark: #34495e;
+            --text: #2c3e50;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            background-color: #f9fafb;
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Auth Pages Styles */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        .auth-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .auth-header {
+            padding: 30px 30px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: white;
+        }
+        
+        .auth-header h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .auth-header p {
+            opacity: 0.9;
+            font-size: 15px;
+        }
+        
+        .auth-body {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .btn-auth {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .form-footer p {
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        .form-footer a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Alert Styles */
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .alert-success {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+            border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+        
+        .alert-error {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #c0392b;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .spinner i {
+            font-size: 20px;
+            color: var(--secondary);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Animations */
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 576px) {
+            .auth-container {
+                padding: 30px 15px;
+            }
+            
+            .auth-body {
+                padding: 20px;
+            }
+            
+            .auth-header {
+                padding: 25px 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Register Page -->
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>Daftar Akun Baru</h2>
+                <p>Bergabunglah dengan komunitas guru profesional</p>
+            </div>
+            <div class="auth-body">
+                <div class="alert alert-error" id="register-error"></div>
+                <div class="alert alert-success" id="register-success"></div>
+                <div class="spinner" id="register-spinner">
+                    <i class="fas fa-spinner"></i>
+                </div>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-name">Nama Lengkap</label>
+                        <input type="text" id="register-name" class="form-control" placeholder="Nama lengkap Anda" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" class="form-control" placeholder="nama@sekolah.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-school">Sekolah</label>
+                        <input type="text" id="register-school" class="form-control" placeholder="Nama sekolah Anda" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Kata Sandi</label>
+                        <input type="password" id="register-password" class="form-control" placeholder="Buat kata sandi yang kuat (min. 6 karakter)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm">Konfirmasi Kata Sandi</label>
+                        <input type="password" id="register-confirm" class="form-control" placeholder="Ulangi kata sandi Anda" required>
+                    </div>
+                    <button type="submit" class="btn-auth" id="register-submit">Daftar Sekarang</button>
+                </form>
+                <div class="form-footer">
+                    <p>Sudah punya akun? <a href="login.html">Masuk di sini</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        // Firebase Configuration - GANTI DENGAN KONFIGURASI FIREBASE ANDA
+       const firebaseConfig = {
+          apiKey: "AIzaSyA-1XhphzT72YY6pbWa3Pe3hSxrvqJdrbk",
+          authDomain: "temanguru-528da.firebaseapp.com",
+          projectId: "temanguru-528da",
+          storageBucket: "temanguru-528da.firebasestorage.app",
+          messagingSenderId: "168377875316",
+          appId: "1:168377875316:web:42fcc13cd9c6ae6aa70a21",
+          measurementId: "G-MHJNQC4BQP"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Elements
+        const registerError = document.getElementById('register-error');
+        const registerSuccess = document.getElementById('register-success');
+        const registerSpinner = document.getElementById('register-spinner');
+
+        // Clear alert messages
+        function clearAlerts() {
+            registerError.style.display = 'none';
+            registerSuccess.style.display = 'none';
+        }
+
+        // Show error message
+        function showError(element, message) {
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        // Show success message
+        function showSuccess(element, message) {
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        // Register form submission
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const school = document.getElementById('register-school').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm').value;
+            
+            // Validation
+            if (password !== confirmPassword) {
+                showError(registerError, 'Kata sandi tidak cocok.');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError(registerError, 'Kata sandi harus minimal 6 karakter.');
+                return;
+            }
+            
+            // Show loading spinner
+            registerSpinner.style.display = 'block';
+            clearAlerts();
+            
+            // Firebase authentication
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Registration successful
+                    const user = userCredential.user;
+                    
+                    // Save user data to Firestore
+                    return db.collection('users').doc(user.uid).set({
+                        name: name,
+                        email: email,
+                        school: school,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                })
+                .then(() => {
+                    // Hide modal and show success
+                    registerSpinner.style.display = 'none';
+                    
+                    showSuccess(registerSuccess, 'Pendaftaran berhasil! Anda akan diarahkan ke halaman utama.');
+                    
+                    // Redirect to main page after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                })
+                .catch((error) => {
+                    // Registration failed
+                    registerSpinner.style.display = 'none';
+                    const errorCode = error.code;
+                    let errorMessage = 'Terjadi kesalahan saat pendaftaran.';
+                    
+                    if (errorCode === 'auth/email-already-in-use') {
+                        errorMessage = 'Email sudah digunakan.';
+                    } else if (errorCode === 'auth/weak-password') {
+                        errorMessage = 'Kata sandi terlalu lemah.';
+                    } else if (errorCode === 'auth/invalid-email') {
+                        errorMessage = 'Format email tidak valid.';
+                    }
+                    
+                    showError(registerError, errorMessage);
+                });
+        });
+
+        // Check if user is already logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in, redirect to main page
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>
