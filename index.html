@@ -51,9 +51,9 @@
             padding: 0 20px;
         }
         
-        /* Header */
+        /* Header - PERBAIKAN UTAMA */
         header {
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: rgba(255, 255, 255, 0.98);
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
             position: fixed;
             top: 0;
@@ -82,6 +82,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            z-index: 1001;
         }
         
         .logo-icon {
@@ -111,13 +112,25 @@
             color: var(--accent);
         }
         
-        nav ul {
+        /* Navigation - PERBAIKAN UTAMA */
+        .nav-container {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+        
+        .main-nav {
+            display: flex;
+        }
+        
+        .main-nav ul {
             display: flex;
             list-style: none;
             gap: 35px;
+            align-items: center;
         }
         
-        nav a {
+        .main-nav a {
             text-decoration: none;
             color: var(--dark);
             font-weight: 500;
@@ -125,9 +138,14 @@
             padding: 8px 0;
             position: relative;
             font-size: 15px;
+            white-space: nowrap;
+            /* PERBAIKAN: Tambah area klik yang lebih besar */
+            display: inline-block;
+            min-height: 40px;
+            line-height: 24px;
         }
         
-        nav a:after {
+        .main-nav a:after {
             content: '';
             position: absolute;
             width: 0;
@@ -139,11 +157,11 @@
             border-radius: 2px;
         }
         
-        nav a:hover {
+        .main-nav a:hover {
             color: var(--secondary);
         }
         
-        nav a:hover:after {
+        .main-nav a:hover:after {
             width: 100%;
         }
         
@@ -163,6 +181,11 @@
             font-size: 14px;
             letter-spacing: 0.3px;
             white-space: nowrap;
+            /* PERBAIKAN: Tambah area klik yang lebih besar */
+            min-height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .btn-login {
@@ -213,6 +236,8 @@
             border-radius: 8px;
             transition: var(--transition);
             cursor: pointer;
+            /* PERBAIKAN: Tambah area klik yang lebih besar */
+            min-height: 50px;
         }
         
         .user-profile:hover {
@@ -247,7 +272,7 @@
             color: var(--dark);
         }
         
-        /* Dropdown Menu */
+        /* Dropdown Menu - PERBAIKAN UTAMA */
         .dropdown {
             position: relative;
         }
@@ -278,10 +303,12 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 10px 20px;
+            padding: 12px 20px;
             color: var(--dark);
             text-decoration: none;
             transition: var(--transition);
+            /* PERBAIKAN: Tambah area klik yang lebih besar */
+            min-height: 44px;
         }
         
         .dropdown-content a:hover {
@@ -294,187 +321,158 @@
             text-align: center;
         }
         
-        /* Modal Styles */
-        .modal {
+        /* Mobile Menu - PERBAIKAN UTAMA */
+        .mobile-menu-btn {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 2000;
-            backdrop-filter: blur(5px);
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .modal-content {
-            position: relative;
-            background-color: white;
-            margin: 5% auto;
-            padding: 0;
-            width: 90%;
-            max-width: 500px;
-            border-radius: 15px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-            animation: slideIn 0.3s ease;
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        .close-modal {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 24px;
-            color: var(--dark);
-            cursor: pointer;
-            transition: var(--transition);
-            z-index: 10;
-        }
-        
-        .close-modal:hover {
-            color: var(--secondary);
-            transform: rotate(90deg);
-        }
-        
-        .modal-header {
-            padding: 30px 30px 20px;
-            border-bottom: 1px solid #eee;
-            text-align: center;
-        }
-        
-        .modal-header h2 {
-            color: var(--primary);
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        
-        .modal-header p {
-            color: var(--dark);
-            font-size: 14px;
-        }
-        
-        .modal-body {
-            padding: 30px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--dark);
-            font-size: 14px;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: var(--transition);
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: var(--secondary);
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-        
-        .btn-modal {
-            background: linear-gradient(135deg, var(--secondary), var(--accent));
-            color: white;
-            padding: 12px 25px;
+            background: none;
             border: none;
-            border-radius: 8px;
-            font-weight: 600;
+            font-size: 24px;
+            color: var(--primary);
             cursor: pointer;
-            transition: var(--transition);
-            width: 100%;
-            margin-top: 10px;
+            z-index: 1001;
+            padding: 10px;
+            /* PERBAIKAN: Tambah area klik yang lebih besar */
+            min-height: 44px;
+            min-width: 44px;
+            align-items: center;
+            justify-content: center;
         }
         
-        .btn-modal:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        /* Mobile Navigation - PERBAIKAN UTAMA */
+        @media (max-width: 992px) {
+            .nav-container {
+                gap: 20px;
+            }
+            
+            .main-nav ul {
+                gap: 25px;
+            }
         }
         
-        .form-footer {
-            text-align: center;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: flex;
+            }
+            
+            .nav-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background: white;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                padding: 100px 20px 40px;
+                transform: translateX(-100%);
+                transition: var(--transition);
+                z-index: 999;
+                overflow-y: auto;
+            }
+            
+            .nav-container.active {
+                transform: translateX(0);
+            }
+            
+            .main-nav {
+                width: 100%;
+            }
+            
+            .main-nav ul {
+                flex-direction: column;
+                gap: 0;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .main-nav a {
+                display: block;
+                padding: 15px;
+                font-size: 18px;
+                border-bottom: 1px solid #f0f0f0;
+                /* PERBAIKAN: Tambah area klik yang lebih besar */
+                min-height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .main-nav a:after {
+                display: none;
+            }
+            
+            .user-actions {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+                max-width: 300px;
+                margin-top: 30px;
+            }
+            
+            .user-actions .btn {
+                width: 100%;
+                text-align: center;
+                padding: 15px;
+                font-size: 16px;
+                /* PERBAIKAN: Tambah area klik yang lebih besar */
+                min-height: 50px;
+            }
+            
+            .user-profile {
+                justify-content: center;
+                width: 100%;
+                padding: 15px;
+                /* PERBAIKAN: Tambah area klik yang lebih besar */
+                min-height: 60px;
+            }
+            
+            .dropdown-content {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                box-shadow: none;
+                background: transparent;
+                padding: 10px 0 0 0;
+                display: none;
+                width: 100%;
+            }
+            
+            .dropdown.active .dropdown-content {
+                display: block;
+            }
+            
+            .dropdown-content a {
+                padding: 12px 20px;
+                border-bottom: 1px solid #f0f0f0;
+                justify-content: center;
+                /* PERBAIKAN: Tambah area klik yang lebih besar */
+                min-height: 50px;
+            }
         }
         
-        .form-footer p {
-            color: var(--dark);
-            font-size: 14px;
+        @media (max-width: 576px) {
+            .logo h1 {
+                font-size: 20px;
+            }
+            
+            .logo-icon {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .user-profile {
+                flex-direction: column;
+                text-align: center;
+                gap: 8px;
+            }
+            
+            .user-info {
+                align-items: center;
+            }
         }
-        
-        .form-footer a {
-            color: var(--secondary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-        
-        .form-footer a:hover {
-            text-decoration: underline;
-        }
-        
-        /* Alert Styles */
-        .alert {
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            display: none;
-        }
-        
-        .alert-success {
-            background-color: rgba(46, 204, 113, 0.1);
-            color: #27ae60;
-            border: 1px solid rgba(46, 204, 113, 0.2);
-        }
-        
-        .alert-error {
-            background-color: rgba(231, 76, 60, 0.1);
-            color: #c0392b;
-            border: 1px solid rgba(231, 76, 60, 0.2);
-        }
-        
-        /* Loading Spinner */
-        .spinner {
-            display: none;
-            text-align: center;
-            margin: 10px 0;
-        }
-        
-        .spinner i {
-            font-size: 20px;
-            color: var(--secondary);
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
+
         /* Hero Section */
         .hero {
             padding: 150px 0 100px;
@@ -550,6 +548,10 @@
             box-shadow: 0 5px 20px rgba(46, 204, 113, 0.3);
             position: relative;
             overflow: hidden;
+            /* PERBAIKAN: Tambah area klik yang lebih besar */
+            min-height: 50px;
+            display: inline-flex;
+            align-items: center;
         }
         
         .btn-primary:before {
@@ -866,6 +868,10 @@
             cursor: pointer;
             transition: var(--transition);
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            /* PERBAIKAN: Tambah area klik yang lebih besar */
+            min-height: 50px;
+            display: inline-flex;
+            align-items: center;
         }
         
         .btn-cta:hover {
@@ -926,6 +932,8 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            /* PERBAIKAN: Tambah area klik yang lebih besar */
+            min-height: 30px;
         }
         
         .footer-column a:hover {
@@ -948,6 +956,8 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition);
+            /* PERBAIKAN: Tambah area klik yang lebih besar */
+            min-height: 40px;
         }
         
         .social-links a:hover {
@@ -979,16 +989,6 @@
             animation: fadeInUp 0.8s ease forwards;
         }
         
-        /* Mobile Menu */
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: var(--primary);
-            cursor: pointer;
-        }
-        
         /* Responsive */
         @media (max-width: 992px) {
             .hero-text h2 {
@@ -1001,51 +1001,6 @@
         }
         
         @media (max-width: 768px) {
-            .mobile-menu-btn {
-                display: block;
-            }
-            
-            nav {
-                position: fixed;
-                top: 80px;
-                left: 0;
-                width: 100%;
-                background-color: white;
-                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-                padding: 20px;
-                transform: translateY(-100%);
-                opacity: 0;
-                visibility: hidden;
-                transition: var(--transition);
-                z-index: 999;
-            }
-            
-            nav.active {
-                transform: translateY(0);
-                opacity: 1;
-                visibility: visible;
-            }
-            
-            nav ul {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .user-actions {
-                flex-direction: column;
-                gap: 10px;
-                width: 100%;
-            }
-            
-            .user-actions .btn {
-                width: 100%;
-                text-align: center;
-            }
-            
-            .header-content {
-                flex-wrap: wrap;
-            }
-            
             .hero {
                 padding: 130px 0 80px;
             }
@@ -1069,26 +1024,6 @@
             .section-title h2 {
                 font-size: 30px;
             }
-            
-            /* Perbaikan untuk modal di perangkat mobile */
-            .modal-content {
-                margin: 10% auto;
-                width: 95%;
-                max-height: 90vh;
-                overflow-y: auto;
-            }
-            
-            .modal-body {
-                padding: 20px;
-            }
-            
-            .form-group {
-                margin-bottom: 15px;
-            }
-            
-            .form-control {
-                padding: 10px 12px;
-            }
         }
         
         @media (max-width: 576px) {
@@ -1102,21 +1037,6 @@
             
             .feature-card, .testimonial-card {
                 padding: 25px 20px;
-            }
-            
-            .user-profile {
-                display: none;
-            }
-            
-            .modal-content {
-                margin: 5% auto;
-                width: 95%;
-            }
-            
-            /* Perbaikan untuk tombol di navbar mobile */
-            .user-actions .btn {
-                padding: 12px 15px;
-                font-size: 14px;
             }
         }
     </style>
@@ -1133,27 +1053,25 @@
                     <h1>Teman<span>guru</span></h1>
                 </div>
                 
-                <button class="mobile-menu-btn">
+                <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Toggle menu">
                     <i class="fas fa-bars"></i>
                 </button>
                 
-                <nav id="main-nav">
-                    <ul>
-                        <li><a href="#home">Beranda</a></li>
-                        <li><a href="#features">Fitur</a></li>
-                        <li><a href="#demo">Demo</a></li>
-                        <li><a href="#testimonials">Testimoni</a></li>
-                        <li><a href="#contact">Kontak</a></li>
-                    </ul>
+                <div class="nav-container" id="nav-container">
+                    <nav class="main-nav">
+                        <ul>
+                            <li><a href="#home">Beranda</a></li>
+                            <li><a href="#features">Fitur</a></li>
+                            <li><a href="#demo">Demo</a></li>
+                            <li><a href="#testimonials">Testimoni</a></li>
+                            <li><a href="#contact">Kontak</a></li>
+                        </ul>
+                    </nav>
                     
                     <div class="user-actions">
                         <!-- Tampilan sebelum login -->
                         <div class="guest-actions">
-                            <button class="btn btn-ai" id="open-ai">
-                                <i class="fas fa-robot"></i> AI Assistant
-                            </button>
-                            <button class="btn btn-login" id="open-login">Masuk</button>
-                            <button class="btn btn-register" id="open-register">Daftar</button>
+                            <button class="btn btn-login" onclick="window.location.href='login.html'">Masuk</button>
                         </div>
                         
                         <!-- Tampilan setelah login -->
@@ -1161,7 +1079,7 @@
                             <button class="btn btn-ai" id="open-ai-loggedin">
                                 <i class="fas fa-robot"></i> AI Assistant
                             </button>
-                            <div class="dropdown">
+                            <div class="dropdown" id="user-dropdown">
                                 <div class="user-profile">
                                     <div class="user-avatar" id="user-avatar">AG</div>
                                     <div class="user-info">
@@ -1180,85 +1098,10 @@
                             </div>
                         </div>
                     </div>
-                </nav>
+                </div>
             </div>
         </div>
     </header>
-
-    <!-- Login Modal -->
-    <div class="modal" id="login-modal">
-        <div class="modal-content">
-            <span class="close-modal" id="close-login">&times;</span>
-            <div class="modal-header">
-                <h2>Masuk ke Akun Anda</h2>
-                <p>Selamat datang kembali! Silakan masuk ke akun Anda</p>
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-error" id="login-error"></div>
-                <div class="spinner" id="login-spinner">
-                    <i class="fas fa-spinner"></i>
-                </div>
-                <form id="login-form">
-                    <div class="form-group">
-                        <label for="login-email">Email</label>
-                        <input type="email" id="login-email" class="form-control" placeholder="nama@sekolah.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="login-password">Kata Sandi</label>
-                        <input type="password" id="login-password" class="form-control" placeholder="Masukkan kata sandi" required>
-                    </div>
-                    <button type="submit" class="btn-modal" id="login-submit">Masuk</button>
-                </form>
-                <div class="form-footer">
-                    <p>Belum punya akun? <a href="#" id="switch-to-register">Daftar di sini</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Register Modal -->
-    <div class="modal" id="register-modal">
-        <div class="modal-content">
-            <span class="close-modal" id="close-register">&times;</span>
-            <div class="modal-header">
-                <h2>Daftar Akun Baru</h2>
-                <p>Bergabunglah dengan komunitas guru profesional</p>
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-error" id="register-error"></div>
-                <div class="alert alert-success" id="register-success"></div>
-                <div class="spinner" id="register-spinner">
-                    <i class="fas fa-spinner"></i>
-                </div>
-                <form id="register-form">
-                    <div class="form-group">
-                        <label for="register-name">Nama Lengkap</label>
-                        <input type="text" id="register-name" class="form-control" placeholder="Nama lengkap Anda" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-email">Email</label>
-                        <input type="email" id="register-email" class="form-control" placeholder="nama@sekolah.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-school">Sekolah</label>
-                        <input type="text" id="register-school" class="form-control" placeholder="Nama sekolah Anda" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-password">Kata Sandi</label>
-                        <input type="password" id="register-password" class="form-control" placeholder="Buat kata sandi yang kuat (min. 6 karakter)" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-confirm">Konfirmasi Kata Sandi</label>
-                        <input type="password" id="register-confirm" class="form-control" placeholder="Ulangi kata sandi Anda" required>
-                    </div>
-                    <button type="submit" class="btn-modal" id="register-submit">Daftar Sekarang</button>
-                </form>
-                <div class="form-footer">
-                    <p>Sudah punya akun? <a href="#" id="switch-to-login">Masuk di sini</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Hero Section -->
     <section class="hero" id="home">
@@ -1268,7 +1111,7 @@
                     <h2>Kelola Nilai Rapor dengan Mudah dan Efisien</h2>
                     <p>Temanguru membantu guru dalam mengelola nilai siswa dengan sistem yang intuitif, cepat, dan akurat. Hemat waktu dan fokus pada pengajaran yang berkualitas.</p>
                     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                        <button class="btn btn-primary">Coba Gratis Sekarang</button>
+                        <button class="btn btn-primary" onclick="window.location.href='register.html'">Coba Gratis Sekarang</button>
                         <button class="btn btn-ai" id="hero-ai-btn">
                             <i class="fas fa-robot"></i> Coba AI Assistant
                         </button>
@@ -1346,7 +1189,7 @@
                     <h2>Input Nilai Rapor dalam Hitungan Menit</h2>
                     <p>Dengan antarmuka yang dirancang khusus untuk guru, Anda dapat menginput nilai siswa dengan cepat dan akurat. Sistem akan otomatis menghitung nilai akhir, predikat, dan mengisi rapor digital.</p>
                     <p>Fitur analisis kami memberikan insight mendalam tentang performa kelas dan rekomendasi metode pembelajaran yang tepat untuk meningkatkan hasil belajar siswa.</p>
-                    <button class="btn btn-primary">Lihat Demo Lengkap</button>
+                    <button class="btn btn-primary" onclick="window.location.href='register.html'">Lihat Demo Lengkap</button>
                 </div>
             </div>
         </div>
@@ -1406,7 +1249,7 @@
             <h2>Siap Mengubah Cara Anda Mengelola Nilai?</h2>
             <p>Bergabunglah dengan ratusan guru yang telah merasakan kemudahan mengelola nilai rapor dengan Temanguru. Mulai gratis hari ini!</p>
             <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                <button class="btn-cta">Daftar Sekarang - Gratis</button>
+                <button class="btn-cta" onclick="window.location.href='register.html'">Daftar Sekarang - Gratis</button>
                 <button class="btn btn-ai" id="cta-ai-btn" style="background: rgba(255,255,255,0.2); border: 2px solid white;">
                     <i class="fas fa-robot"></i> Coba AI Assistant
                 </button>
@@ -1451,12 +1294,12 @@
                     <ul>
                         <li><a href="#"><i class="fas fa-envelope"></i> info@temanguru.com</a></li>
                         <li><a href="#"><i class="fas fa-phone"></i> +62 21 1234 5678</a></li>
-                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Jakarta, Indonesia</a></li>
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Yogyakarta, Indonesia</a></li>
                     </ul>
                 </div>
             </div>
             <div class="copyright">
-                <p>&copy; 2023 Temanguru. Semua hak dilindungi.</p>
+                <p>&copy; 2025 Temanguru. Semua hak dilindungi.</p>
             </div>
         </div>
     </footer>
@@ -1487,41 +1330,66 @@
             }
         });
 
-        // Mobile menu toggle
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        const mainNav = document.getElementById('main-nav');
+        // Mobile menu functionality - PERBAIKAN UTAMA
+        const mobileMenuBtn = document.getElementById('mobile-menu-toggle');
+        const navContainer = document.getElementById('nav-container');
+        const userDropdown = document.getElementById('user-dropdown');
         
-        mobileMenuBtn.addEventListener('click', function() {
-            mainNav.classList.toggle('active');
+        mobileMenuBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // Mencegah event bubbling
+            navContainer.classList.toggle('active');
+            mobileMenuBtn.innerHTML = navContainer.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+            
+            // Toggle body scroll ketika menu mobile terbuka
+            document.body.style.overflow = navContainer.classList.contains('active') ? 'hidden' : '';
         });
 
-        // Close mobile menu when clicking outside
+        // Close mobile menu when clicking on a link - PERBAIKAN UTAMA
+        document.querySelectorAll('.main-nav a, .user-actions .btn').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768) {
+                    navContainer.classList.remove('active');
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        // Mobile dropdown functionality - PERBAIKAN UTAMA
+        if (userDropdown) {
+            const userProfile = userDropdown.querySelector('.user-profile');
+            
+            userProfile.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768) {
+                    e.preventDefault();
+                    e.stopPropagation(); // Mencegah event bubbling
+                    userDropdown.classList.toggle('active');
+                }
+            });
+        }
+
+        // Close mobile menu when clicking outside - PERBAIKAN UTAMA
         document.addEventListener('click', function(event) {
-            if (!event.target.closest('nav') && !event.target.closest('.mobile-menu-btn')) {
-                mainNav.classList.remove('active');
+            if (!event.target.closest('.nav-container') && !event.target.closest('.mobile-menu-btn')) {
+                navContainer.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                document.body.style.overflow = '';
+            }
+            
+            // Tutup dropdown mobile jika klik di luar
+            if (window.innerWidth <= 768 && userDropdown && !event.target.closest('.dropdown')) {
+                userDropdown.classList.remove('active');
             }
         });
 
-        // Modal functionality
-        const loginModal = document.getElementById('login-modal');
-        const registerModal = document.getElementById('register-modal');
-        const openLoginBtn = document.getElementById('open-login');
-        const openRegisterBtn = document.getElementById('open-register');
-        const closeLoginBtn = document.getElementById('close-login');
-        const closeRegisterBtn = document.getElementById('close-register');
-        const switchToRegister = document.getElementById('switch-to-register');
-        const switchToLogin = document.getElementById('switch-to-login');
+        // Elements
         const guestActions = document.querySelector('.guest-actions');
         const loggedInActions = document.querySelector('.logged-in-actions');
         const logoutBtn = document.getElementById('logout-btn');
-        const loginError = document.getElementById('login-error');
-        const registerError = document.getElementById('register-error');
-        const registerSuccess = document.getElementById('register-success');
-        const loginSpinner = document.getElementById('login-spinner');
-        const registerSpinner = document.getElementById('register-spinner');
 
         // Tombol AI - navigasi ke halaman AI
-        const openAiBtn = document.getElementById('open-ai');
         const openAiLoggedinBtn = document.getElementById('open-ai-loggedin');
         const heroAiBtn = document.getElementById('hero-ai-btn');
         const ctaAiBtn = document.getElementById('cta-ai-btn');
@@ -1533,218 +1401,9 @@
         }
 
         // Event listener untuk semua tombol AI
-        if (openAiBtn) openAiBtn.addEventListener('click', navigateToAI);
         if (openAiLoggedinBtn) openAiLoggedinBtn.addEventListener('click', navigateToAI);
         if (heroAiBtn) heroAiBtn.addEventListener('click', navigateToAI);
         if (ctaAiBtn) ctaAiBtn.addEventListener('click', navigateToAI);
-
-        // Open login modal
-        openLoginBtn.addEventListener('click', function() {
-            loginModal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            clearAlerts();
-        });
-
-        // Open register modal
-        openRegisterBtn.addEventListener('click', function() {
-            registerModal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            clearAlerts();
-        });
-
-        // Close modals
-        closeLoginBtn.addEventListener('click', function() {
-            loginModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-            clearAlerts();
-        });
-
-        closeRegisterBtn.addEventListener('click', function() {
-            registerModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-            clearAlerts();
-        });
-
-        // Switch between login and register
-        switchToRegister.addEventListener('click', function(e) {
-            e.preventDefault();
-            loginModal.style.display = 'none';
-            registerModal.style.display = 'block';
-            clearAlerts();
-        });
-
-        switchToLogin.addEventListener('click', function(e) {
-            e.preventDefault();
-            registerModal.style.display = 'none';
-            loginModal.style.display = 'block';
-            clearAlerts();
-        });
-
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            if (event.target === loginModal) {
-                loginModal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-                clearAlerts();
-            }
-            if (event.target === registerModal) {
-                registerModal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-                clearAlerts();
-            }
-        });
-
-        // Clear alert messages
-        function clearAlerts() {
-            loginError.style.display = 'none';
-            registerError.style.display = 'none';
-            registerSuccess.style.display = 'none';
-        }
-
-        // Show error message
-        function showError(element, message) {
-            element.textContent = message;
-            element.style.display = 'block';
-        }
-
-        // Show success message
-        function showSuccess(element, message) {
-            element.textContent = message;
-            element.style.display = 'block';
-        }
-
-        // Login form submission
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            // Show loading spinner
-            loginSpinner.style.display = 'block';
-            clearAlerts();
-            
-            // Firebase authentication
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    // Login successful
-                    const user = userCredential.user;
-                    
-                    // Get user data from Firestore
-                    db.collection('users').doc(user.uid).get()
-                        .then((doc) => {
-                            if (doc.exists) {
-                                const userData = doc.data();
-                                updateUserUI(userData);
-                            }
-                            
-                            // Hide modal and show success
-                            loginModal.style.display = 'none';
-                            document.body.style.overflow = 'auto';
-                            loginSpinner.style.display = 'none';
-                            
-                            guestActions.style.display = 'none';
-                            loggedInActions.style.display = 'flex';
-                            
-                            showSuccess(registerSuccess, 'Login berhasil! Selamat datang di Temanguru.');
-                        })
-                        .catch((error) => {
-                            console.error("Error getting user data:", error);
-                            loginSpinner.style.display = 'none';
-                            showError(loginError, 'Terjadi kesalahan saat mengambil data pengguna.');
-                        });
-                })
-                .catch((error) => {
-                    // Login failed
-                    loginSpinner.style.display = 'none';
-                    const errorCode = error.code;
-                    let errorMessage = 'Terjadi kesalahan saat login.';
-                    
-                    if (errorCode === 'auth/user-not-found') {
-                        errorMessage = 'Email tidak terdaftar.';
-                    } else if (errorCode === 'auth/wrong-password') {
-                        errorMessage = 'Kata sandi salah.';
-                    } else if (errorCode === 'auth/invalid-email') {
-                        errorMessage = 'Format email tidak valid.';
-                    }
-                    
-                    showError(loginError, errorMessage);
-                });
-        });
-
-        // Register form submission
-        document.getElementById('register-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('register-name').value;
-            const email = document.getElementById('register-email').value;
-            const school = document.getElementById('register-school').value;
-            const password = document.getElementById('register-password').value;
-            const confirmPassword = document.getElementById('register-confirm').value;
-            
-            // Validation
-            if (password !== confirmPassword) {
-                showError(registerError, 'Kata sandi tidak cocok.');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showError(registerError, 'Kata sandi harus minimal 6 karakter.');
-                return;
-            }
-            
-            // Show loading spinner
-            registerSpinner.style.display = 'block';
-            clearAlerts();
-            
-            // Firebase authentication
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    // Registration successful
-                    const user = userCredential.user;
-                    
-                    // Save user data to Firestore
-                    return db.collection('users').doc(user.uid).set({
-                        name: name,
-                        email: email,
-                        school: school,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                })
-                .then(() => {
-                    // Hide modal and show success
-                    registerModal.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                    registerSpinner.style.display = 'none';
-                    
-                    guestActions.style.display = 'none';
-                    loggedInActions.style.display = 'flex';
-                    
-                    // Update UI with user data
-                    updateUserUI({
-                        name: name,
-                        school: school
-                    });
-                    
-                    showSuccess(registerSuccess, 'Pendaftaran berhasil! Akun Anda telah dibuat.');
-                })
-                .catch((error) => {
-                    // Registration failed
-                    registerSpinner.style.display = 'none';
-                    const errorCode = error.code;
-                    let errorMessage = 'Terjadi kesalahan saat pendaftaran.';
-                    
-                    if (errorCode === 'auth/email-already-in-use') {
-                        errorMessage = 'Email sudah digunakan.';
-                    } else if (errorCode === 'auth/weak-password') {
-                        errorMessage = 'Kata sandi terlalu lemah.';
-                    } else if (errorCode === 'auth/invalid-email') {
-                        errorMessage = 'Format email tidak valid.';
-                    }
-                    
-                    showError(registerError, errorMessage);
-                });
-        });
 
         // Update user UI after login
         function updateUserUI(userData) {
@@ -1761,17 +1420,18 @@
         }
 
         // Logout functionality
-        logoutBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            auth.signOut().then(() => {
-                guestActions.style.display = 'flex';
-                loggedInActions.style.display = 'none';
-                showSuccess(registerSuccess, 'Anda telah berhasil keluar.');
-            }).catch((error) => {
-                console.error("Logout error:", error);
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                auth.signOut().then(() => {
+                    guestActions.style.display = 'flex';
+                    loggedInActions.style.display = 'none';
+                }).catch((error) => {
+                    console.error("Logout error:", error);
+                });
             });
-        });
+        }
 
         // Check if user is already logged in
         auth.onAuthStateChanged((user) => {
@@ -1801,8 +1461,15 @@
         loggedInActions.style.display = 'none';
 
         // Smooth scrolling for navigation links
-        document.querySelectorAll('nav a, .btn-primary, .btn-cta').forEach(anchor => {
+        document.querySelectorAll('.main-nav a, .btn-primary, .btn-cta').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
+                // Skip untuk link yang mengarah ke halaman lain
+                if (this.getAttribute('href') && 
+                    (this.getAttribute('href').startsWith('http') || 
+                     this.getAttribute('href').endsWith('.html'))) {
+                    return;
+                }
+                
                 e.preventDefault();
                 
                 const targetId = this.getAttribute('href');
@@ -1815,12 +1482,12 @@
                         });
                         
                         // Close mobile menu after clicking a link
-                        mainNav.classList.remove('active');
+                        if (window.innerWidth <= 768) {
+                            navContainer.classList.remove('active');
+                            mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                            document.body.style.overflow = '';
+                        }
                     }
-                } else if (this.classList.contains('btn-primary') || this.classList.contains('btn-cta')) {
-                    // For demo purposes, show register modal for CTA buttons
-                    registerModal.style.display = 'block';
-                    document.body.style.overflow = 'hidden';
                 }
             });
         });
@@ -1844,6 +1511,15 @@
         
         // Check on scroll
         window.addEventListener('scroll', fadeInOnScroll);
+
+        // Close mobile menu on window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                navContainer.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                document.body.style.overflow = '';
+            }
+        });
     </script>
 </body>
 </html>
