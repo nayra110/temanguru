@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant - Temanguru</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #2ecc71;
+            --ai-color: #FF6B6B;
+            --light: #ecf0f1;
+            --dark: #34495e;
+            --text: #2c3e50;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: #f9fafb;
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            transition: var(--transition);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--ai-color), #FF8E53);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+        }
+        
+        .logo-icon i {
+            font-size: 20px;
+            color: white;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+        
+        .logo span {
+            color: var(--ai-color);
+        }
+        
+        .btn-back {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: white;
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        /* AI Assistant Section - Full Height dengan Input Tetap */
+        .ai-assistant {
+            padding: 100px 0 0;
+            flex: 1;
+            height: calc(100vh - 80px);
+            margin-top: 80px;
+        }
+        
+        .ai-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-width: none;
+            margin: 0;
+            background: white;
+            border-radius: 0;
+            box-shadow: none;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .ai-header {
+            background: linear-gradient(135deg, var(--ai-color), #FF8E53);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        
+        .ai-header i {
+            font-size: 24px;
+        }
+        
+        .ai-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .ai-chat {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #f8f9fa;
+            /* Tambahkan padding bottom untuk memberi ruang pada input */
+            padding-bottom: 100px;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 15px;
+            border-radius: 15px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .ai-message {
+            background: rgba(255, 107, 107, 0.1);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .user-message {
+            background: rgba(52, 152, 219, 0.1);
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .message-content {
+            margin-bottom: 5px;
+        }
+        
+        .message-time {
+            font-size: 12px;
+            color: var(--dark);
+            text-align: right;
+        }
+        
+        .ai-input {
+            display: flex;
+            padding: 20px;
+            border-top: 1px solid #eee;
+            gap: 10px;
+            background: white;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .ai-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: var(--transition);
+        }
+        
+        .ai-input input:focus {
+            outline: none;
+            border-color: var(--ai-color);
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+        }
+        
+        .ai-input button {
+            background: linear-gradient(135deg, var(--ai-color), #FF8E53);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .ai-input button:hover {
+            background: linear-gradient(135deg, #FF5252, #FF7B36);
+            transform: translateY(-2px);
+        }
+        
+        .ai-input button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Loading indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 15px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 15px;
+            align-self: flex-start;
+            max-width: 80px;
+            margin-bottom: 10px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--ai-color);
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+        
+        @keyframes typing {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .ai-assistant {
+                padding: 80px 0 0;
+                margin-top: 70px;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .ai-header {
+                padding: 15px 20px;
+            }
+            
+            .ai-chat {
+                padding: 15px;
+                padding-bottom: 90px;
+            }
+            
+            .ai-input {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h1>AI <span>Assistant</span></h1>
+                </div>
+                
+                <button class="btn-back" id="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Kembali</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- AI Assistant Section -->
+    <section class="ai-assistant">
+        <div class="ai-container">
+            <div class="ai-header">
+                <i class="fas fa-robot"></i>
+                <h2>AI Assistant Temanguru</h2>
+            </div>
+            <div class="ai-chat" id="chat-container">
+                <div class="message ai-message">
+                    <div class="message-content">
+                        Halo! Saya AI Assistant Temanguru. Saya di sini untuk membantu Anda dengan pertanyaan seputar pendidikan, manajemen kelas, atau penggunaan platform Temanguru. Apa yang bisa saya bantu hari ini?
+                    </div>
+                    <div class="message-time">Sekarang</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Input Section - Tetap di bawah -->
+    <div class="ai-input">
+        <input type="text" id="user-input" placeholder="Ketik pertanyaan Anda di sini...">
+        <button id="send-button">
+            <i class="fas fa-paper-plane"></i>
+            <span>Kirim</span>
+        </button>
+    </div>
+
+    <script>
+        // Konfigurasi Groq API
+        const GROQ_API_KEY = "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";
+        const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
+        
+        // Fungsi untuk kembali ke halaman utama
+        document.getElementById('back-button').addEventListener('click', function() {
+            window.location.href = 'index.html';
+        });
+        
+        // Fungsi untuk chat AI dengan Groq API
+        document.getElementById('send-button').addEventListener('click', sendMessage);
+        document.getElementById('user-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        async function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const message = userInput.value.trim();
+            const sendButton = document.getElementById('send-button');
+            
+            if (message === '') return;
+            
+            // Tambahkan pesan pengguna ke chat
+            addMessage(message, 'user');
+            
+            // Kosongkan input
+            userInput.value = '';
+            
+            // Nonaktifkan tombol kirim
+            sendButton.disabled = true;
+            sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Memproses...</span>';
+            
+            // Tampilkan indikator mengetik
+            showTypingIndicator();
+            
+            try {
+                // Panggil Groq API
+                const aiResponse = await callGroqAPI(message);
+                addMessage(aiResponse, 'ai');
+            } catch (error) {
+                console.error('Error calling Groq API:', error);
+                addMessage("Maaf, terjadi kesalahan saat menghubungi AI Assistant. Silakan coba lagi nanti.", 'ai');
+            } finally {
+                // Hapus indikator mengetik
+                hideTypingIndicator();
+                
+                // Aktifkan kembali tombol kirim
+                sendButton.disabled = false;
+                sendButton.innerHTML = '<i class="fas fa-paper-plane"></i><span>Kirim</span>';
+            }
+        }
+        
+        async function callGroqAPI(userMessage) {
+            const systemPrompt = `Anda adalah AI Assistant Temanguru, asisten AI yang membantu guru dengan pertanyaan seputar pendidikan, manajemen kelas, dan penggunaan platform Temanguru. 
+            
+            Tugas Anda:
+            1. Berikan saran dan bantuan untuk masalah pendidikan
+            2. Bantu dengan strategi pengajaran dan manajemen kelas
+            3. Berikan panduan tentang penggunaan platform Temanguru
+            4. Jawab pertanyaan dengan ramah, informatif, dan relevan
+            5. Jika pertanyaan tidak terkait dengan pendidikan atau Temanguru, dengan sopan arahkan kembali ke topik yang relevan
+            
+            Gunakan bahasa Indonesia yang baik dan mudah dipahami.`;
+            
+            const requestBody = {
+                model: "llama-3.1-8b-instant",
+                messages: [
+                    {
+                        role: "system",
+                        content: systemPrompt
+                    },
+                    {
+                        role: "user",
+                        content: userMessage
+                    }
+                ],
+                temperature: 0.7,
+                max_tokens: 1024,
+                top_p: 1,
+                stream: false
+            };
+            
+            const response = await fetch(GROQ_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${GROQ_API_KEY}`
+                },
+                body: JSON.stringify(requestBody)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            return data.choices[0].message.content;
+        }
+        
+        function addMessage(content, sender) {
+            const chatContainer = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.textContent = content;
+            
+            const messageTime = document.createElement('div');
+            messageTime.className = 'message-time';
+            messageTime.textContent = getCurrentTime();
+            
+            messageDiv.appendChild(messageContent);
+            messageDiv.appendChild(messageTime);
+            chatContainer.appendChild(messageDiv);
+            
+            // Scroll ke bawah
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function showTypingIndicator() {
+            const chatContainer = document.getElementById('chat-container');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typing-indicator';
+            
+            for (let i = 0; i < 3; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'typing-dot';
+                typingDiv.appendChild(dot);
+            }
+            
+            chatContainer.appendChild(typingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        function getCurrentTime() {
+            const now = new Date();
+            return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        }
+    </script>
+</body>
+</html>
